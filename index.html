@@ -8,7 +8,8 @@
         body {
             font-family: Arial, sans-serif;
             text-align: center;
-            background-color: #111;
+            background: url('https://static.vecteezy.com/system/resources/thumbnails/024/990/990/small/city-and-house-under-the-sea-background-free-vector.jpg') no-repeat center center fixed;
+            background-size: cover;
             color: white;
             padding: 50px;
         }
@@ -17,7 +18,7 @@
             margin: auto;
             padding: 20px;
             border-radius: 10px;
-            background: #222;
+            background: rgba(34, 34, 34, 0.8); /* Darken background for contrast */
             box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
         }
         .price {
@@ -37,6 +38,11 @@
         .stock-chart {
             font-size: 1.5em;
             margin: 20px 0;
+            font-family: monospace;
+        }
+        .chart-line {
+            font-size: 20px;
+            white-space: nowrap;
         }
     </style>
 </head>
@@ -51,7 +57,9 @@
         </div>
         <h2>Fake Stock: FreakCorp</h2>
         <div class="price">Stock Price: <strong id="stock-price">$420.69</strong></div>
-        <div class="stock-chart" id="stock-chart">📈📉📈📉</div>
+        <div class="stock-chart" id="stock-chart">
+            <div id="chart-line" class="chart-line">📉</div>
+        </div>
         <div class="buttons">
             <button class="buy" onclick="showFakeMessage()">Buy FreakCorp Stock</button>
             <button class="sell" onclick="showFakeMessage()">Sell FreakCorp Stock</button>
@@ -66,12 +74,23 @@
         function updateStockPrice() {
             let priceElement = document.getElementById("stock-price");
             let chartElement = document.getElementById("stock-chart");
+            let chartLineElement = document.getElementById("chart-line");
+
             let randomChange = (Math.random() * 10 - 5).toFixed(2); // Random change between -5 and +5
             let currentPrice = parseFloat(priceElement.innerText.replace("$", ""));
             let newPrice = (currentPrice + parseFloat(randomChange)).toFixed(2);
-            
+
             priceElement.innerText = `$${newPrice}`;
-            chartElement.innerText = randomChange > 0 ? "📈" : "📉";
+
+            // Create a fake fluctuating chart line
+            let randomMovement = randomChange > 0 ? "📈" : "📉";
+            let currentChartLine = chartLineElement.innerText;
+            chartLineElement.innerText = currentChartLine + randomMovement; // Add next symbol to simulate movement
+            
+            // Limit the chart to a max length (just for visual fun)
+            if (chartLineElement.innerText.length > 30) {
+                chartLineElement.innerText = "📉"; // Reset to start again
+            }
         }
         
         setInterval(updateStockPrice, 2000); // Update stock price every 2 seconds
