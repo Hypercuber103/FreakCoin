@@ -3,143 +3,81 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FreakCoin - The Only Bitcoin You Need!</title>
+    <title>FreakCoin - Fake Trading Platform</title>
     <style>
         body {
             font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
             text-align: center;
-            background: url('https://static.vecteezy.com/system/resources/thumbnails/024/990/990/small/city-and-house-under-the-sea-background-free-vector.jpg') no-repeat center center fixed;
-            background-size: cover;
-            color: white;
-            padding: 50px;
-        }
-        .container {
-            max-width: 600px;
-            margin: auto;
             padding: 20px;
+        }
+        h1 {
+            color: #6200ea;
+        }
+        .price-container {
+            margin: 20px;
+            padding: 20px;
+            background-color: #fff;
             border-radius: 10px;
-            background: rgba(34, 34, 34, 0.8); /* Darken background for contrast */
-            box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
         .price {
             font-size: 2em;
-            margin: 20px 0;
+            font-weight: bold;
+            color: #00c853;
         }
-        .buttons button {
+        button {
             padding: 10px 20px;
-            margin: 10px;
-            font-size: 1.2em;
-            cursor: pointer;
+            font-size: 1em;
+            color: #fff;
+            background-color: #6200ea;
             border: none;
             border-radius: 5px;
+            cursor: pointer;
         }
-        .buy { background: green; color: white; }
-        .sell { background: red; color: white; }
-        .stock-chart {
-            font-size: 1.5em;
-            margin: 20px 0;
-            font-family: monospace;
-        }
-        canvas {
-            width: 100%;
-            height: 250px;
-            background-color: rgba(255, 255, 255, 0.1);
+        button:hover {
+            background-color: #3700b3;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Welcome to FreakCoin</h1>
-        <p>The one and only Bitcoin that matters! 🚀</p>
-        <div class="price">Current Price: <strong>$69,420</strong></div>
-        <div class="buttons">
-            <button class="buy" onclick="showFakeMessage()">Buy FreakCoin</button>
-            <button class="sell" onclick="showFakeMessage()">Sell FreakCoin</button>
-        </div>
-        <h2>Fake Stock: FreakCorp</h2>
-        <div class="price">Stock Price: <strong id="stock-price">$420.69</strong></div>
-        
-        <!-- Line chart -->
-        <canvas id="stock-chart"></canvas>
-
-        <div class="buttons">
-            <button class="buy" onclick="showFakeMessage()">Buy FreakCorp Stock</button>
-            <button class="sell" onclick="showFakeMessage()">Sell FreakCorp Stock</button>
-        </div>
+    <h1>FreakCoin - Fake Trading Platform</h1>
+    <div class="price-container">
+        <h2>FreakCoin Price</h2>
+        <p class="price" id="freakcoin-price">$0.00</p>
     </div>
+    <div class="price-container">
+        <h2>FreakCorp Stock Price</h2>
+        <p class="price" id="freakcorp-price">$0.00</p>
+    </div>
+    <button onclick="buyFreakCoin()">Buy FreakCoin</button>
+    <button onclick="sellFreakCoin()">Sell FreakCoin</button>
 
     <script>
-        function showFakeMessage() {
-            alert("Oops! This is a fake site! FreakCoin and FreakCorp aren't real!");
+        // Simulate real-time price updates
+        function simulatePriceUpdates() {
+            setInterval(() => {
+                const freakCoinPrice = (Math.random() * 100).toFixed(2);
+                const freakCorpPrice = (Math.random() * 500).toFixed(2);
+
+                document.getElementById('freakcoin-price').innerText = `$${freakCoinPrice}`;
+                document.getElementById('freakcorp-price').innerText = `$${freakCorpPrice}`;
+            }, 2000); // Update every 2 seconds
         }
 
-        // Set up the canvas for the chart
-        var ctx = document.getElementById('stock-chart').getContext('2d');
-        var dataPoints = [420.69]; // Initial data point
-        var chart;
-
-        // Initialize the chart
-        function initializeChart() {
-            chart = new Chart(ctx, {
-                type: 'line', // Line chart
-                data: {
-                    labels: Array.from({ length: dataPoints.length }, (_, i) => i + 1), // X-axis labels
-                    datasets: [{
-                        label: 'FreakCorp Stock Price',
-                        data: dataPoints, // The data points
-                        borderColor: 'rgba(75, 192, 192, 1)', // Line color
-                        borderWidth: 2,
-                        fill: false, // Don't fill the area under the line
-                        tension: 0.4 // Slightly curved line
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    scales: {
-                        x: {
-                            ticks: {
-                                autoSkip: true,
-                                maxTicksLimit: 10
-                            }
-                        },
-                        y: {
-                            beginAtZero: false
-                        }
-                    }
-                }
-            });
+        // Buy FreakCoin (fake transaction)
+        function buyFreakCoin() {
+            alert("You bought FreakCoin! (This is a fake transaction.)");
         }
 
-        // Update the stock price and chart
-        function updateStockPrice() {
-            let priceElement = document.getElementById("stock-price");
-            let randomChange = (Math.random() * 10 - 5).toFixed(2); // Random change between -5 and +5
-            let currentPrice = parseFloat(priceElement.innerText.replace("$", ""));
-            let newPrice = (currentPrice + parseFloat(randomChange)).toFixed(2);
-
-            priceElement.innerText = `$${newPrice}`;
-
-            // Update the data points for the chart
-            dataPoints.push(newPrice);
-
-            // Limit the data points to avoid chart overflow
-            if (dataPoints.length > 20) {
-                dataPoints.shift(); // Remove the first element if we exceed the limit
-            }
-
-            // Update the chart with the new data
-            chart.data.labels = Array.from({ length: dataPoints.length }, (_, i) => i + 1);
-            chart.data.datasets[0].data = dataPoints;
-            chart.update();
+        // Sell FreakCoin (fake transaction)
+        function sellFreakCoin() {
+            alert("You sold FreakCoin! (This is a fake transaction.)");
         }
 
-        // Initialize the chart when the page loads
-        initializeChart();
-
-        // Update the stock price and chart every 2 seconds
-        setInterval(updateStockPrice, 2000);
+        // Start the simulation
+        simulatePriceUpdates();
     </script>
-
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </body>
 </html>
