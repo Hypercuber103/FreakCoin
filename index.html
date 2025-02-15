@@ -52,7 +52,17 @@
         button:hover {
             background-color: #3700b3; /* Darker purple on hover */
         }
+        .chart-container {
+            background-color: rgba(0, 0, 0, 0.6); /* Semi-transparent black */
+            border-radius: 10px;
+            padding: 20px;
+            width: 80%;
+            max-width: 800px;
+            margin: 20px;
+        }
     </style>
+    <!-- Include Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <h1>FreakCoin - Fake Trading Platform</h1>
@@ -67,15 +77,32 @@
     <button onclick="buyFreakCoin()">Buy FreakCoin</button>
     <button onclick="sellFreakCoin()">Sell FreakCoin</button>
 
+    <!-- Chart Container -->
+    <div class="chart-container">
+        <canvas id="freakcoinChart"></canvas>
+    </div>
+
     <script>
         // Simulate real-time price updates
+        let freakCoinPrice = 50; // Starting price
+        let freakCorpPrice = 250; // Starting price
+
         function simulatePriceUpdates() {
             setInterval(() => {
-                const freakCoinPrice = (Math.random() * 100).toFixed(2);
-                const freakCorpPrice = (Math.random() * 500).toFixed(2);
+                // Randomly update prices
+                freakCoinPrice = freakCoinPrice + (Math.random() - 0.5) * 10;
+                freakCorpPrice = freakCorpPrice + (Math.random() - 0.5) * 50;
 
+                // Ensure prices don't go negative
+                freakCoinPrice = Math.max(0, freakCoinPrice).toFixed(2);
+                freakCorpPrice = Math.max(0, freakCorpPrice).toFixed(2);
+
+                // Update the UI
                 document.getElementById('freakcoin-price').innerText = `$${freakCoinPrice}`;
                 document.getElementById('freakcorp-price').innerText = `$${freakCorpPrice}`;
+
+                // Add data to the chart
+                addChartData(freakCoinPrice);
             }, 2000); // Update every 2 seconds
         }
 
@@ -87,6 +114,73 @@
         // Sell FreakCoin (fake transaction)
         function sellFreakCoin() {
             alert("You sold FreakCoin! (This is a fake transaction.)");
+        }
+
+        // Chart.js Configuration
+        const ctx = document.getElementById('freakcoinChart').getContext('2d');
+        const chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: [], // Time labels
+                datasets: [{
+                    label: 'FreakCoin Price',
+                    data: [], // Price data
+                    borderColor: '#00c853', // Green line
+                    backgroundColor: 'rgba(0, 200, 83, 0.1)', // Light green fill
+                    fill: true,
+                    tension: 0.4, // Smooth line
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        display: true,
+                        title: {
+                            display: true,
+                            text: 'Time',
+                            color: '#fff',
+                        },
+                        ticks: {
+                            color: '#fff',
+                        }
+                    },
+                    y: {
+                        display: true,
+                        title: {
+                            display: true,
+                            text: 'Price (USD)',
+                            color: '#fff',
+                        },
+                        ticks: {
+                            color: '#fff',
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: '#fff',
+                        }
+                    }
+                }
+            }
+        });
+
+        // Add data to the chart
+        function addChartData(price) {
+            const time = new Date().toLocaleTimeString();
+            chart.data.labels.push(time);
+            chart.data.datasets[0].data.push(price);
+
+            // Keep only the last 10 data points
+            if (chart.data.labels.length > 10) {
+                chart.data.labels.shift();
+                chart.data.datasets[0].data.shift();
+            }
+
+            chart.update();
         }
 
         // Start the simulation
