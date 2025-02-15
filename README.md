@@ -1,1 +1,1 @@
-# FreakCoin-Fake-Site
+# FreakCoin
