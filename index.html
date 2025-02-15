@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FreakCoin - Fake Trading Platform</title>
+    <title>FreakCoin - Very Real Trading Platform</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -94,12 +94,12 @@
                 freakCorpPrice = freakCorpPrice + (Math.random() - 0.5) * 50;
 
                 // Ensure prices don't go negative
-                freakCoinPrice = Math.max(0, freakCoinPrice).toFixed(2);
-                freakCorpPrice = Math.max(0, freakCorpPrice).toFixed(2);
+                freakCoinPrice = Math.max(0, freakCoinPrice);
+                freakCorpPrice = Math.max(0, freakCorpPrice);
 
                 // Update the UI
-                document.getElementById('freakcoin-price').innerText = `$${freakCoinPrice}`;
-                document.getElementById('freakcorp-price').innerText = `$${freakCorpPrice}`;
+                document.getElementById('freakcoin-price').innerText = `$${freakCoinPrice.toFixed(2)}`;
+                document.getElementById('freakcorp-price').innerText = `$${freakCorpPrice.toFixed(2)}`;
 
                 // Add data to the chart
                 addChartData(freakCoinPrice);
@@ -108,12 +108,12 @@
 
         // Buy FreakCoin (fake transaction)
         function buyFreakCoin() {
-            alert("You bought FreakCoin! (This is a fake transaction.)");
+            alert(`You bought FreakCoin at $${freakCoinPrice.toFixed(2)}! (This is a fake transaction.)`);
         }
 
         // Sell FreakCoin (fake transaction)
         function sellFreakCoin() {
-            alert("You sold FreakCoin! (This is a fake transaction.)");
+            alert(`You sold FreakCoin at $${freakCoinPrice.toFixed(2)}! (This is a fake transaction.)`);
         }
 
         // Chart.js Configuration
