@@ -75,32 +75,12 @@
 
         // Set up the canvas for the chart
         var ctx = document.getElementById('stock-chart').getContext('2d');
-        var dataPoints = []; // This will hold the data points for the chart
+        var dataPoints = [420.69]; // Initial data point
+        var chart;
 
-        // Fake stock price updates
-        function updateStockPrice() {
-            let priceElement = document.getElementById("stock-price");
-            let randomChange = (Math.random() * 10 - 5).toFixed(2); // Random change between -5 and +5
-            let currentPrice = parseFloat(priceElement.innerText.replace("$", ""));
-            let newPrice = (currentPrice + parseFloat(randomChange)).toFixed(2);
-
-            priceElement.innerText = `$${newPrice}`;
-
-            // Update the data points for the chart
-            dataPoints.push(newPrice);
-
-            // Limit the data points to avoid chart overflow
-            if (dataPoints.length > 20) {
-                dataPoints.shift(); // Remove the first element if we exceed the limit
-            }
-
-            // Update the chart with the new data
-            updateChart();
-        }
-
-        // Create a chart with the data points
-        function updateChart() {
-            var chart = new Chart(ctx, {
+        // Initialize the chart
+        function initializeChart() {
+            chart = new Chart(ctx, {
                 type: 'line', // Line chart
                 data: {
                     labels: Array.from({ length: dataPoints.length }, (_, i) => i + 1), // X-axis labels
@@ -130,8 +110,31 @@
             });
         }
 
-        // Initialize the chart with initial data
-        updateChart();
+        // Update the stock price and chart
+        function updateStockPrice() {
+            let priceElement = document.getElementById("stock-price");
+            let randomChange = (Math.random() * 10 - 5).toFixed(2); // Random change between -5 and +5
+            let currentPrice = parseFloat(priceElement.innerText.replace("$", ""));
+            let newPrice = (currentPrice + parseFloat(randomChange)).toFixed(2);
+
+            priceElement.innerText = `$${newPrice}`;
+
+            // Update the data points for the chart
+            dataPoints.push(newPrice);
+
+            // Limit the data points to avoid chart overflow
+            if (dataPoints.length > 20) {
+                dataPoints.shift(); // Remove the first element if we exceed the limit
+            }
+
+            // Update the chart with the new data
+            chart.data.labels = Array.from({ length: dataPoints.length }, (_, i) => i + 1);
+            chart.data.datasets[0].data = dataPoints;
+            chart.update();
+        }
+
+        // Initialize the chart when the page loads
+        initializeChart();
 
         // Update the stock price and chart every 2 seconds
         setInterval(updateStockPrice, 2000);
