@@ -40,9 +40,10 @@
             margin: 20px 0;
             font-family: monospace;
         }
-        .chart-line {
-            font-size: 20px;
-            white-space: nowrap;
+        canvas {
+            width: 100%;
+            height: 250px;
+            background-color: rgba(255, 255, 255, 0.1);
         }
     </style>
 </head>
@@ -57,43 +58,85 @@
         </div>
         <h2>Fake Stock: FreakCorp</h2>
         <div class="price">Stock Price: <strong id="stock-price">$420.69</strong></div>
-        <div class="stock-chart" id="stock-chart">
-            <div id="chart-line" class="chart-line">📉</div>
-        </div>
+        
+        <!-- Line chart -->
+        <canvas id="stock-chart"></canvas>
+
         <div class="buttons">
             <button class="buy" onclick="showFakeMessage()">Buy FreakCorp Stock</button>
             <button class="sell" onclick="showFakeMessage()">Sell FreakCorp Stock</button>
         </div>
     </div>
-    
+
     <script>
         function showFakeMessage() {
             alert("Oops! This is a fake site! FreakCoin and FreakCorp aren't real!");
         }
-        
+
+        // Set up the canvas for the chart
+        var ctx = document.getElementById('stock-chart').getContext('2d');
+        var dataPoints = []; // This will hold the data points for the chart
+
+        // Fake stock price updates
         function updateStockPrice() {
             let priceElement = document.getElementById("stock-price");
-            let chartElement = document.getElementById("stock-chart");
-            let chartLineElement = document.getElementById("chart-line");
-
             let randomChange = (Math.random() * 10 - 5).toFixed(2); // Random change between -5 and +5
             let currentPrice = parseFloat(priceElement.innerText.replace("$", ""));
             let newPrice = (currentPrice + parseFloat(randomChange)).toFixed(2);
 
             priceElement.innerText = `$${newPrice}`;
 
-            // Create a fake fluctuating chart line
-            let randomMovement = randomChange > 0 ? "📈" : "📉";
-            let currentChartLine = chartLineElement.innerText;
-            chartLineElement.innerText = currentChartLine + randomMovement; // Add next symbol to simulate movement
-            
-            // Limit the chart to a max length (just for visual fun)
-            if (chartLineElement.innerText.length > 30) {
-                chartLineElement.innerText = "📉"; // Reset to start again
+            // Update the data points for the chart
+            dataPoints.push(newPrice);
+
+            // Limit the data points to avoid chart overflow
+            if (dataPoints.length > 20) {
+                dataPoints.shift(); // Remove the first element if we exceed the limit
             }
+
+            // Update the chart with the new data
+            updateChart();
         }
-        
-        setInterval(updateStockPrice, 2000); // Update stock price every 2 seconds
+
+        // Create a chart with the data points
+        function updateChart() {
+            var chart = new Chart(ctx, {
+                type: 'line', // Line chart
+                data: {
+                    labels: Array.from({ length: dataPoints.length }, (_, i) => i + 1), // X-axis labels
+                    datasets: [{
+                        label: 'FreakCorp Stock Price',
+                        data: dataPoints, // The data points
+                        borderColor: 'rgba(75, 192, 192, 1)', // Line color
+                        borderWidth: 2,
+                        fill: false, // Don't fill the area under the line
+                        tension: 0.4 // Slightly curved line
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        x: {
+                            ticks: {
+                                autoSkip: true,
+                                maxTicksLimit: 10
+                            }
+                        },
+                        y: {
+                            beginAtZero: false
+                        }
+                    }
+                }
+            });
+        }
+
+        // Initialize the chart with initial data
+        updateChart();
+
+        // Update the stock price and chart every 2 seconds
+        setInterval(updateStockPrice, 2000);
     </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </body>
 </html>
